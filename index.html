@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>En djupdykning i multipel regression</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Erik Bülow" />
+    <meta name="date" content="2018-12-03" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+background-image: url("index_files/figure-html/p1.png")
+background-size: contain
+---
+
+background-image: url("https://www.hakaimagazine.com/wp-content/uploads/header-vr-coral-beauty.jpg")
+background-size: cover
+
+---
+
+background-image: url("https://nouwcdn.com/11/1250000/1210000/1205466/pics/20161202224947217241205466_sbig.jpg")
+background-size: cover
+---
+
+background-image: url("https://scontent-arn2-1.xx.fbcdn.net/v/t31.0-8/22792482_1933090217012587_1033686099322050073_o.jpg?_nc_cat=111&amp;_nc_ht=scontent-arn2-1.xx&amp;oh=fed12504d30116056c3190e2977d93c4&amp;oe=5C8ED1F8")
+background-size: cover
+---
+
+# Syfte
+
+- Mål med presentationen
+  - Repetera tidigare kunskap
+  - Presentera begrepp som kan vara bra att känna till
+  - Introduktion till vidare studier
+
+--
+- Omfattar inte
+  - Djupare teoretiska resonemang
+  - Matematiska bevis
+  - Programmering
+  - Verkligt exempel
+
+--
+- Förkunskaper
+  - Bekant med viss matematisk notatoin
+  - Tidigare erfarenhet av regression
+
+--
+- Trigger warning!
+  - Matematiska formler förekommer!
+  - Memorera dem inte!
+
+---
+
+# Modellering
+
+&gt; All models are wrong, some are useful. */George Box*
+
+Söker `\(\hat f\)` sådan att 
+
+`$$Y = f(X) = \hat f (X) + \varepsilon \approx \hat f (X)$$`
+
+för `\(X = X_1, X_2, \dots, X_p\)` oberoende variabler och `\(Y\)` beroende.
+
+.footnote[Vänsteledet egentligen funktion av `\(Y\)`, t ex sannolikhet vid logistisk regression.]
+
+---
+
+# Viktiga modelleringssteg
+
+1. Formulera problemställning/sytfe
+
+--
+2. Formalisera d:o utifrån data: variabler och deras egenskaper.
+
+--
+3. Selektion/missing data
+
+--
+4. Metodval utifrån problemställning (LM, GLM, Cox)
+
+--
+5. Ytterligare kovariater att justera för?
+
+--
+6. (Skattning av dessa variabler)
+
+--
+7. Eventuell modellanpassning (variabelselektion)
+
+--
+8. Modellvalidering
+
+--
+9. (Presentera/beskriv)
+
+---
+
+# Regression
+
+Vill ofta skatta väntevärde (medelvärde) givet kovariater (även kvantiler/median och sannolikhet).
+
+- Linjär regression (LM): `\(f = \beta X\)`
+- Generaliserad linjär regression(GLM) `\(f = g(\beta X)\)` för funktion `\(g\)`
+  - Logistisk regression (logit-länk)
+- Cox `\((\lambda e^{\beta X})\)`
+
+Vi utgår från linjär regression men mycket är generaliserbart!
+
+.footnote[$\beta X = \sum_{i = 0}^p \beta_i X_i = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$ med `\(X_0 = 1\)`]
+
+???
+
+# Inkluderar inte
+
+Additiva modeller
+- mixade/hierarkiska modeller
+- Non-parametric regression; splines och smoothers. t ex moving averaga eller moving least squares linear regression smoother (loess)
+
+---
+
+# Ordval
+
+- **Enkel/univariabel** = en oberoende variabel: `\(X = X_1\)`
+- **Multipel/multivariabel** = fler oberoende variabler: `\(X = X_1, \dots, X_p\)`
+
+Ej att förväxla med:
+
+- **Univariat** = en utfallsvariabel: `\(Y = Y_1\)`
+- **Multivariat** = flera utfallsvariabler: `\(Y = Y_1, \dots, Y_{p'}\)`
+
+???
+
+Tidsserieanalys exempel på multivariat (dock ej nödv med våra PROM-data).
+
+
+---
+background-image: url(https://github.com/yihui/xaringan/releases/download/v0.0.2/karl-moustache.jpg)
+---
+
+# Vad är den kliniska frågeställningen?
+
+Tänk igenom innan analysen påbörjas!
+
+&gt; Hur mår man efter en höftprotesoperation?
+
+Kan vi besvara denna fråga med den data vi har? Nja ... kanske ...
+
+&gt; Hur upplever patienter sin generella hälsa ett år efter höftprotesoperation?
+
+Besvaras mha EQ-VAS från PROM-formulär ett år postoperativt (`vas1`).
+
+---
+
+# Metodval (LM, GLM, Cox ...)
+
+På vilken skala mäts utfallet?
+
+Approximativt kontinuerligt (skala 0-100).
+
+I detta fall blir linjär regression lämpligt!
+
+.footnote[Ordinal fr o m 2017 -- kräver andra metoder!]
+
+---
+
+# Exposure/treatment
+
+Vilka grupper/vilka behandlingar vill vi jämföra?
+
+&gt; Hur skiljer sig gamla från unga?
+
+Har vi denna information?
+
+Nja, inte "ung" vs "gammal" men väl ålder vid operation (`age`).
+
+&gt; Finns samband mellan `age` och `vas1`
+
+Detta är en approximativt kontinuerlig variabel. 
+Ibland finns skäl till kategorisering. Oftast inte! 
+
+---
+
+# Confounders
+
+Vilka ytterligare variabler kan tänkas påverka utfallet?
+
+Denna frågeställning är ofta inte lika väl genomtänkt före analysstart.
+DAG?
+
+
+![](https://www.researchgate.net/profile/Carlos_Del_Rio2/publication/276910016/figure/fig3/AS:271809798996000@1441815914822/Directed-acyclic-graph-DAG-illustrating-the-hypothesized-rectal-STI-HIV-association-and.png)&lt;!-- --&gt;
+---
+
+# Oberoende variabler
+
+- kön (`sex`)
+- preoperativ hälsa (`vas0`)
+- födelseår (`byear`)
+- Om första bokstaven i sjukhusnamnet där operationen ägde rum var en hård vokal (`hardvok1sjname`).
+- Elektiva vs akuta (`dia`)
+
+???
+
+- **Ja**, "bra att ha" (t ex krav för Sveriges officiella statistik)
+- **Ja**, ty har sannolikt en signifikant påverkan
+- **Kanske**, ty för en längre studieperiod riskerar vi annars blanda ihop ålder och kohort
+- **Nej**, även om detta skulle falla ut signifikant riskeras overfittnig.
+- **Nej**, detta blir snarast en variabel för stratifiering eller i vårt fall exklusion (ty frakturer saknar `vas0`)
+
+---
+
+
+# Kolinearitet
+
+- Idealet är at endast inkludera "ortogonala" (helt oberoende) variabler
+- Svårt
+- Undvik uppenbart beroende (parvist korrelerade eller mer komplext)
+- Skattningar och variabelselektion blir svårt 
+- Dock OK vid prediktion
+- Ev autokorrelation vid modellering av PROM-tidsserier eller upprepede reoperationer/revisioner 
+
+&gt; För kort tidsperiod blir födelseår redundant i förhållande till ålder!
+
+---
+
+# Saknad data
+
+- Exkl fall där utfall saknas (vanligast).
+
+--
+- Exkl fall där ngn (oberoende) variabel saknas (vanligt men ej rekommenderat)
+  - Kan tappa mycket data (power)
+  - Skattningar kan bli biased
+
+--
+- Typer av (partiellt) saknad data:
+
+--
+  - Missing completely at random (MCAR)
+
+--
+  - Missing at random (MAR)
+
+--
+  - Missing not at random (MNAR)
+
+--
+- Multiple imputation using chained equation (Mice, MCMC, Monte Carlo, stövelstroppande)
+
+???
+
+- MCAR
+- MAR - P(missing) beror endast på observerad data (mer missing för dementa)
+- MNAR - beror på annan data eller på utfallet självt (inkomst/partisympatier/ sämre hälsa svarar ej)
+
+---
+
+# Variabeltransformationer
+
+- kön blir indikatorvariabel: `sex = 1` för män.
+- Kanske vill vi logaritmera/exponera/transformera `vas0` (`vas1`)?
+- Kanske är inte det exakta födelseåret intressant utan snarare en kategorisering: baby-boomers, genarion X, MTV-generationen, millenials etc (ordinal eller inte?) Oftast inte!
+
+---
+
+# Parameterskattning
+
+Vi vill skatta `\(\beta = \beta_1, \dots, \beta_5\)` från 
+
+`$$\mathrm{vas1} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} +\beta_3 \mathrm{vas0} + \beta_4 \mathrm{byear} + \beta_5 \mathrm{hardvok1sjname} + \varepsilon$$`
+
+Här har vi tyvärr för många parametrar för att enkelt kunna illustrera modellen i rumsliga dimensioner. 
+
+Vi låter estimeringen ske genom lite "svart magi" (minsta kvadratmetoden, maximum likelihood, cke-linjär minsta kvadratmetod).
+
+Resultatet blir skattningar `\(\hat \beta = \hat \beta_0, \dots, \hat \beta_5\)` (+ CI, p-värden, `\(R^2\)` etc.)
+
+---
+
+# Modellförenkling/variabelselektion
+
+.small[
+ &gt; "If this procedure had just been proposed as a statistical method, it would most likely be rejected because it violates every principle of statistical estimation and hypothesis testing" */ Frank E Harrell Jr.*
+]
+
+.pull-left[
+## Gör det inte!
+
+- Overfitting
+- Reducerar frihetsgraden (förbrukar `\(\alpha\)`)
+- Underskattar CI-bredd/p-värden
+- Överskattar `\(R^2\)`
+- Ignorerar klinisk erfarenhet
+]
+
+.pull-right[
+## Gör det!
+
+- Alla andra gör det!
+- Lätt ("tryck-på-en-knapp")
+- Om modellhypotes saknas
+- Om `\(\alpha\)` oviktig
+- Om extern validering görs
+]
+
+---
+
+# Om vi gör det
+
+- Basera selektion på `\(\alpha \gg 0.05\)` (dvs var konservativ med exclusion om urval sker mha denna aspekt).
+- Välj AIC eller BIC (föredrar enklare modeller) utifrån behov
+- Kompensera med frihetsgrader från full modell
+- Kombinera med klinisk erfarenhet/rimlig tolkningsmodell
+- Hellre forward selection än "univariable screening"
+
+---
+
+# Variabelselektion: Exempel
+
+- Tanken är att exkludera variabler med `\(\beta \approx 0\)` (för vilka `\(H_0: \beta_i = 0\)` ej förkastas).
+- Anta att `\(\beta_4 = \beta_5 \approx 0\)` (med `\(p &lt; 0,2\)`). 
+
+`$$\mathrm{vas1} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} +\beta_3 \mathrm{vas0} + \varepsilon$$`
+
+Låt `vas = vas0 - vas1`:
+
+
+`$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon$$`
+---
+
+# Overfitting
+
+- För lite data `\((m)\)` i förhållande till antal parametrar `\((p)\)`.
+
+--
+- Extremfall: `\(X =\)` personnummer ("saturated modell")
+
+--
+- Allmän rekommendation: `\(p &lt; m/ 15\)` där m beror på variabel:
+  - kontinuerlig: `\(n\)`
+  - binär: `\(\min(n_1, n_2)\)`
+  - ordinal: `\(n - \frac{1}{n^2} \sum^k_{i = 1}n^3_i\)`
+  - överlevnad: antal händelser
+
+--
+- Shrinkage
+  - Trycker ner `\(|\beta|\)` mot 0.
+  - Ridge Regression
+  - Penalized maximum likelihood
+
+---
+
+background-image: url("index_files/figure-html/graf.png")
+background-size: contain
+
+# Något problem med den här bilden?
+
+--
+Saknar spridningsmått! Hur väl stämmer modellen?
+
+---
+
+# Undersök residualer
+
+1. Skatta `\(\beta\)` med `\(\hat \beta\)`
+2. estimera `\(Y\)` som `\(\hat Y = X\hat \beta\)`
+3. Jämför estimerade och observerade värden: `\(e = Y - X\hat \beta\)`
+4. Boxplot av `\(e\)` vs `sex`.
+4. Plotta `\(e\)` vs `age`.
+5. Finns någon systematik?
+
+.footnote[Vi antar här att vi använt minsta kvadratmetoden för parameterskattning.]
+
+---
+
+# Låtsasdata
+
+
+
+`$$\mathrm{vas} = -10 -0,2\cdot\mathrm{age} + 3\cdot\mathrm{female} + \varepsilon$$` 
+där `\(\varepsilon \sim N(0,2)\)`
+
+Parametrar: `\(\beta = (\beta_0, \beta_1, \beta_2) = (-10, -0.2, 3)\)`
+
+Parameterskattning: `\(\hat \beta = (\hat \beta_0, \hat \beta_1, \hat\beta_2) = (-8.7, -0.2, 2.4)\)`
+
+---
+# Residualer vs sex
+
+![](index_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+---
+# Residualer vs age
+
+![](index_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+---
+# Residualer vs fitted
+
+![](index_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+---
+
+# Normalfördelning?
+
+.footnote[Behövs vid interferens (konfidensintervall och p-värdestest).]
+
+![](index_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+
+???
+
+# För- och nackdelar med residular
+
+**+** Intuitivt
+
+**-** Endast för kontinuerliga icke-censurerat utfall
+
+**-** Kräver subjektiv bedömning
+
+**-** Svårt upptäcka interaktion
+
+**-** Svårtolkat om interaktion finns
+
+---
+
+# Grafisk representation
+
+![](index_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+
+???
+
+# För- och nackdelar med grafiska representationen
+
+**+** intuitivt
+
+**+** möjligt att se interaktioner
+
+**-** Endast för kontinuerliga icke-censurerat utfall
+
+**-** svårt se svagare mönser eller om man har mycket data
+
+**-** Begränsat antal dimensioner:
+
+- x-axel
+- färg
+- fyllning
+- figur
+- storlek
+- genomskinlighet 
+- linjetyp
+
+---
+
+# Icke-parametrisk smoother
+
+![](index_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+
+???
+
+Ser att det kan finnas annat mönster än vad som har fångats i modellen (i detta fall brus).
+
+---
+
+# Flexibel parametrisk modell
+
+.footnote[Kubiska splines med 3 "knutar"]
+
+![](index_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+
+???
+
+Vi kan se om en modell med splines skulle ge bättre resultat (ligga närmare smoothern)?
+
+---
+
+
+# Interaktion 
+
+Endast huvudeffekterer (main effects): 
+`$$f(X) = \sum X_i \beta_i$$`
+
+`$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon$$`
+
+Huvudeffekter + interaktionseffekter: 
+`$$f(X) = \sum X_i \beta_i + \sum \sum X_i X_j \beta_{ij}$$`
+
+
+`$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta_3 \mathrm{age}\cdot\mathrm{female}  +\varepsilon$$`
+
+Interaktioner mellan fler variabler `\((\beta \prod X_k)\)` samt transformationer av dessa (t ex polynom) är teoretiskt möjligt men blir svårtolkat.
+
+---
+
+# Tolkning av interaktionseffekter
+
+- Svårt
+- Marginaleffekter
+- Inkludera alltid main effects för korresponderande interaktionseffekter
+- Hur hanteras omöjliga kombinationer (t ex gravida män, cementerad cup för halvprotes eller slutenvård på vårdcentral)?
+
+---
+
+# Validering
+
+`\(R^2, R^2_{adj}, AUC, \dots\)` överskattas vid overfittnig. 
+
+--
+- Extern
+  - Data ej tillgänglig vid modellutvecklingen
+  - Ev av andra forskare
+  
+--
+
+- Intern
+  - "Split-sample"
+  - Korsvalidernig
+  - "K-fold" korsvalidernig
+  - Bootstrap (jack-knife)
+
+???
+
+Upprepa helst även eventuell variabelselektion i varje Bootstrap-iteration.
+
+---
+
+
+
+# Undvik
+
+- Inklusion av icke motiverade variabler
+- För många variabler i förhållande till observationer
+- Interaktionseffekter utan main effects
+- Overfitting
+- Korrelerade oberoende variabler (om syftet är att förstå/skatta effekter)
+- Extrapolation
+
+---
+
+background-image: url("https://d1w7fb2mkkr3kw.cloudfront.net/assets/images/book/lrg/9781/4614/9781461413523.jpg")
+background-size: contain
+background-position: center
+---
+
+background-image: url("https://images-na.ssl-images-amazon.com/images/I/41JCfSrnrdL._SX351_BO1,204,203,200_.jpg")
+background-size: contain
+background-position: center
+---
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
