@@ -50,17 +50,12 @@ background-image: url("https://nouwcdn.com/11/1250000/1210000/1205466/pics/20161
 background-size: cover
 ---
 
-
-background-image: url("https://www.forsvarsmakten.se/imagevault/publishedmedia/f21gg2n194j61dssp2sc/Inuti.jpg")
-background-size: cover
-
----
 # Purpose
 
 - Aims
-  - Introduce terminology good to know
-  - Motivate further studies of the field
-    
+  - Introduce terminology
+  - Motivate further studies
+  
 --
 - Does not include
   - Deep theoretical reasoning
@@ -70,8 +65,8 @@ background-size: cover
 
 --
 - Prerequisites
-  - Familiarity with some mathematical notation
-  - Some experience with regression analysis would help
+  - Some experience with regression,
+  - and mathematical notation
 
 --
 - Trigger warning!
@@ -92,11 +87,33 @@ This presentation is available online:
 
 > All models are wrong, some are useful. */George Box*
 
-What is $\hat f$ such that 
+--
 
-$$Y = f(X) = \hat f (X) + \varepsilon \approx \hat f (X)$$
+Assume we want to model an outcome $Y$ ...
 
-for $X = X_1, X_2, \dots, X_p$ independent and $Y$ dependent.
+--
+based on $p$ independent variables $X = X_1, X_2, \dots, X_p$,
+
+--
+such that $Y = f(X)$ for some function $f$
+
+--
+estimated by $\hat f$, such that 
+
+$$Y = f(X) = \hat f (X) + \varepsilon \approx \hat f(X)$$
+
+for $\varepsilon \sim N(0, \sigma^2)$ for some $\sigma > 0$.
+
+--
+This usually involves coefficients $\beta = (\beta_0, \dots, \beta_{p+1})$, such that 
+
+--
+$f (X) = f (X\beta)$ 
+
+--
+where $\beta X = \sum_{i = 0}^p \beta_i X_i = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$ 
+with $X_0 = 1$
+
 
 .footnote[LHS could also be for example the probability of an event (logistic regression).]
 
@@ -113,10 +130,10 @@ for $X = X_1, X_2, \dots, X_p$ independent and $Y$ dependent.
 3. Inclusion/exclusion criteria and missing data
 
 --
-4. Method to use: LM, GLM, Cox, GGLM, GAM, ...
+4. Method to use: LM, GLM, Cox, (GGLM, GAM, ...)
 
 --
-5. Additional covariates to adjust for
+5. Additional covariates to adjust for?
 
 --
 6. *(Estimate parameters)*
@@ -143,7 +160,6 @@ Wants to estimate expected value (or quantile/median, probability etc) of outcom
 
 We use LM as example but much is generalizable!
 
-.footnote[$\beta X = \sum_{i = 0}^p \beta_i X_i = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$ with $X_0 = 1$]
 
 ???
 
@@ -160,7 +176,7 @@ Additive models
 - **Simple/univariable** = one independent variable: $X = X_1$
 - **Multiple/multivariable** = multiple independent variables: $X = X_1, \dots, X_p$
 
-Different than:
+Not the same as:
 
 - **Univariate** = one dependent variable: $Y = Y_1$
 - **Multivariate** = multiple dependent variables: $Y = Y_1, \dots, Y_{p'}$
@@ -173,12 +189,11 @@ Time series analysis example of multivariate model (PROM?).
 
 # What do you want to know
 
-Think before you ask!
-
 > How do patients with hip prosthesis feel after surgery?
 
 Can this be answered by SHAR? Well, if we reformulate/approximate:
 
+--
 > How do patients on average rate their over-all health one year after primary surgery?
 
 Can be answered by EQ-VAS from PROM questionnaire (`vas1`).
@@ -199,19 +214,16 @@ Hence, linear regression!
 
 # Exposure/treatment
 
-Should different groups of patients be compared?
-
-(If not, regression might not be needed.)
-
 > Is there a differnece between young and old patients?
 
 Can this be answered?
 
-Well, we could use age at surgery as a covariate (`age`).
+--
 
 > Is there any association between `age` och `vas1`?
 
 Age is approximately continues.
+
 Sometimes (rarely) motivated to categorize (young/old).
 
 ---
@@ -219,9 +231,11 @@ Sometimes (rarely) motivated to categorize (young/old).
 # Confounders
 
 Additional variables to adjust for.
-Think before and while you ask!
+
+Modelled similar as treatment variable.
 
 --
+
 DAG?
 
 
@@ -251,12 +265,15 @@ knitr::include_graphics("https://www.researchgate.net/profile/Carlos_Del_Rio2/pu
 
 # Collinearity
 
-- Best case scenario: all independent variables orthogonal (completely different dimensions) 
-- Difficult to find
-- Then avoid at least obvious dependencies (pairwise correlation or VIF)
-- Can not distinguish estimates and hard to make variable selections based on p-values etc
+- Best case: independent variables orthogonal 
+- Rare
+- Avoid at least obvious dependencies (pairwise correlation or VIF)
+- Can not distinguish estimates
+- Hard to make variable selections based on p-values etc
 - OK for prediction modelling
-- Autocorrelation present for modelling longer PROM-series (1, 6 and 10 years). 
+- Autocorrelation for time series (PROM at 0, 1, 6 and 10 years). 
+
+--
 
 > `byear` and `age` redundant for shorter time frames. Drop `byear`!
 
@@ -298,7 +315,7 @@ knitr::include_graphics("https://www.researchgate.net/profile/Carlos_Del_Rio2/pu
 
 - `sex` as indicator variable, `sex = 1` for male.
 - Some fun with `vas0` (`vas1`): $\log(x), 1 / x, \sqrt x, x + 2x^2 - \pi x^3, \dots$?
-- `byear` (if included) might be categorized (if that would makes sense) as: baby-boomers, generation X, MTV-generation, millenials etc. Ordinal scale (think!)?
+- `byear` (if included) might be categorized (if that would makes sense) as: baby-boomers, generation X, MTV-generation, millenials etc. Ordinal scale (motivate!)?
 
 ---
 
@@ -307,7 +324,7 @@ knitr::include_graphics("https://www.researchgate.net/profile/Carlos_Del_Rio2/pu
 Search for $\beta = \beta_1, \dots, \beta_5$ from
 
 $$\mathrm{vas1} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} +\beta_3 \mathrm{vas0} + \beta_4 \mathrm{byear} + \beta_5 \mathrm{hardvok1sjname} + \varepsilon$$
-We do this by black magic! (linear least squares, non-linear least squares, maximum likelihood).
+We do this by "black magic"! (linear least squares, non-linear least squares, maximum likelihood, ...).
 
 Result in $\hat \beta = \hat \beta_0, \dots, \hat \beta_5$ (+ CI, p-values, $R^2$ etc).
 
@@ -324,8 +341,8 @@ Result in $\hat \beta = \hat \beta_0, \dots, \hat \beta_5$ (+ CI, p-values, $R^2
 
 - Overfitting
 - Reduce degrees of freedom (spend $\alpha$)
-- Under estimate CI width/p-values
-- Over estimate $R^2$
+- Under-estimate CI width/p-values
+- Over-estimate $R^2$
 - Ignore clinical relevance
 ]
 
@@ -337,7 +354,6 @@ Result in $\hat \beta = \hat \beta_0, \dots, \hat \beta_5$ (+ CI, p-values, $R^2
 - No clinical theories available
 - $\alpha$ not important
 - External validation anyway
-- "All models are wrong, some are useful"
 ]
 
 ---
@@ -355,7 +371,7 @@ Result in $\hat \beta = \hat \beta_0, \dots, \hat \beta_5$ (+ CI, p-values, $R^2
 # Variable selection: Example
 
 - Exclude variables with $\beta \approx 0$ (for which $H_0: \beta_i = 0$ not rejected).
-- Assume that $\beta_4 = \beta_5 \approx 0$ (with $p = (.4, .6)$ let's say). 
+- Assume that $\beta_4 = \beta_5 \approx 0$ (reject $H_0$ with $p = (.4, .6)$ let's say). 
 
 $$\mathrm{vas1} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} +\beta_3 \mathrm{vas0} + \varepsilon$$
 
