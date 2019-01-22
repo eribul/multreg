@@ -32,18 +32,17 @@ background-size: cover
 - Aims
   - Introduce terminology
   - Motivate further studies
-  
+
 --
 - Does not include
-  - Deep theoretical reasoning
-  - Mathematical proofs
+  - Deep theoretical reasoning and mathematical proofs
   - Programming skills
   - Real data example
 
 --
 - Prerequisites
-  - Some experience with regression,
-  - and mathematical notation
+  - some experience with regression
+  - mathematical notation
 
 --
 - Trigger warning!
@@ -58,13 +57,16 @@ This presentation is available online:
 
 **https://multreg.netlify.com**
 
+
+---
+![](https://www.azquotes.com/picture-quotes/quote-all-models-are-wrong-but-some-are-useful-george-e-p-box-53-42-27.jpg)&lt;!-- --&gt;
+
+
+`$$Y = f(X) + \varepsilon$$`
+
 ---
 
-# Modelling
-
-&gt; All models are wrong, some are useful. */George Box*
-
---
+# Notation
 
 Assume we want to model an outcome `\(Y\)` ...
 
@@ -98,19 +100,19 @@ with `\(X_0 = 1\)`
 
 # Modelling steps
 
-1. What do you want to know?
+1. Heuristic question
 
 --
-2. Formalize your question with regards to data.
+2. Formalize question
 
 --
-3. Inclusion/exclusion criteria and missing data
+3. Inclusion/exclusion/missing data
 
 --
-4. Method to use: LM, GLM, Cox, (GGLM, GAM, ...)
+4. Method: LM, GLM, Cox, (GGLM, GAM, ...)
 
 --
-5. Additional covariates to adjust for?
+5. Covariates adjustments?
 
 --
 6. *(Estimate parameters)*
@@ -128,17 +130,17 @@ with `\(X_0 = 1\)`
 
 # Regression
 
-Wants to estimate expected value (or quantile/median, probability etc) of outcome given some covariates.
+Estimate expected value (quantile/median, probability etc) of outcome given covariates.
 
-- Linear regression (LM): `\(f = \beta X\)`
-- Generalized linear regression (GLM) `\(f = g(\beta X)\)` for some function `\(g\)`
-  - Logistic regression (logit-link)
+- Linear (LM): `\(f = \beta X\)`
+- Generalized linear (GLM) `\(f = g(\beta X)\)`
+  - Logistic
 - Cox `\((\lambda e^{\beta X})\)`
 
-We use LM as example but much is generalizable!
-
-
 ???
+
+We use LM but much is generalizable!
+
 
 # Additional methods
 
@@ -150,13 +152,12 @@ Additive models
 
 # Definitions
 
-- **Simple/univariable** = one independent variable: `\(X = X_1\)`
-- **Multiple/multivariable** = multiple independent variables: `\(X = X_1, \dots, X_p\)`
+- Simple/univariable: `\(X = X_1\)`
+- Multiple/multivariable: `\(X = X_1, \dots, X_p\)`
 
-Not the same as:
 
-- **Univariate** = one dependent variable: `\(Y = Y_1\)`
-- **Multivariate** = multiple dependent variables: `\(Y = Y_1, \dots, Y_{p'}\)`
+- Univariate: `\(Y = Y_1\)`
+- Multivariate: `\(Y = Y_1, \dots, Y_{p'}\)`
 
 ???
 
@@ -164,67 +165,92 @@ Time series analysis example of multivariate model (PROM?).
 
 ---
 
-# What do you want to know
+# The question
 
 &gt; How do patients with hip prosthesis feel after surgery?
 
-Can this be answered by SHAR? Well, if we reformulate/approximate:
-
 --
+
 &gt; How do patients on average rate their over-all health one year after primary surgery?
 
-Can be answered by EQ-VAS from PROM questionnaire (`vas1`).
+`$$Y = \mathrm{vas1} = f(X\beta)$$`
 
 ---
 
-# Method
+# The method
 
-What sort of variable is the outcome measure?
+- What sort of outcome?
 
-Approximately continuous (0-100).
+--
 
-Hence, linear regression!
+- Approximately continuous (0-100).
 
-.footnote[Ordinal scale from 2017]
+--
+
+- Linear regression!
+
+`$$Y = \mathrm{vas1} = f(X\beta) = X\beta$$`
+???
+
+Ordinal scale from 2017
 
 ---
 
-# Exposure/treatment
+# Comparing what?
 
 &gt; Is there a differnece between young and old patients?
-
-Can this be answered?
 
 --
 
 &gt; Is there any association between `age` och `vas1`?
 
-Age is approximately continues.
+--
 
-Sometimes (rarely) motivated to categorize (young/old).
+- Age is approximately continues.
+
+--
+- Sometimes (rarely) motivated to categorize (young/old).
+
+`$$\mathrm{vas1} = \beta0 + \beta_1\mathrm{age} + \varepsilon$$`
 
 ---
 
-# Confounders
+# Adjustments
 
-Additional variables to adjust for.
-
-Modelled similar as treatment variable.
+- Additional variables to adjust for.
 
 --
+- Treated as exposure.
 
-DAG?
+--
+- DAG?
 
 
 ![](https://www.researchgate.net/profile/Carlos_Del_Rio2/publication/276910016/figure/fig3/AS:271809798996000@1441815914822/Directed-acyclic-graph-DAG-illustrating-the-hypothesized-rectal-STI-HIV-association-and.png)&lt;!-- --&gt;
 ---
 
-# Independent variables
+# Covariates
+
+`$$Y = \beta_0 + \beta_1 \mathrm{age} + ???$$`
+
+--
 
 - `sex`
+
+--
+
 - preoperative health (`vas0`)
+
+--
+
 - year of birth (`byear`)
+
+--
+
 - If the first letter of hospital name is a a hard vocal (`hardvok1sjname`).
+
+--
+
 - Elective vs acute (`dia`)
 
 ???
@@ -240,12 +266,24 @@ DAG?
 
 # Collinearity
 
-- Best case: independent variables orthogonal 
-- Rare
-- Avoid at least obvious dependencies (pairwise correlation or VIF)
+How `\(X_i\)`:s relate
+
+--
+- Ideal case: independent variables orthogonal 
+
+--
+- Avoid at least obvious dependencies (pairwise correlation/VIF)
+
+--
 - Can not distinguish estimates
+
+--
 - Hard to make variable selections based on p-values etc
+
+--
 - OK for prediction modelling
+
+--
 - Autocorrelation for time series (PROM at 0, 1, 6 and 10 years). 
 
 --
@@ -256,10 +294,10 @@ DAG?
 
 # Missing data
 
-- Exclude all cases with missing response data (response analysis).
+- Exclude cases with missing `\(Y\)`
 
 --
-- Exclude cases with independent variables missing (common but not recommended)
+- Exclude cases with any `\(X_i\)` missing (common but not recommended)
   - Reduce power
   - Leads to biases estimates
 
@@ -289,19 +327,30 @@ DAG?
 # Transformations/different functional forms
 
 - `sex` as indicator variable, `sex = 1` for male.
+
+--
+
 - Some fun with `vas0` (`vas1`): `\(\log(x), 1 / x, \sqrt x, x + 2x^2 - \pi x^3, \dots\)`?
-- `byear` (if included) might be categorized (if that would makes sense) as: baby-boomers, generation X, MTV-generation, millenials etc. Ordinal scale (motivate!)?
+- `vas = vas1 - vas0`  
+--
+
+- `byear` (if included) categorized: baby-boomers, generation X, MTV-generation, millenials (Ordinal?)
 
 ---
 
 # Parameter estimates
 
-Search for `\(\beta = \beta_1, \dots, \beta_5\)` from
+Estimate `\(\beta = \beta_1, \dots, \beta_5\)` from
 
-`$$\mathrm{vas1} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} +\beta_3 \mathrm{vas0} + \beta_4 \mathrm{byear} + \beta_5 \mathrm{hardvok1sjname} + \varepsilon$$`
-We do this by "black magic"! (linear least squares, non-linear least squares, maximum likelihood, ...).
+`$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta_3 \mathrm{byear} + \beta_4 \mathrm{hardvok1sjname} + \varepsilon$$`
+"Black magic"! (linear least squares, non-linear least squares, maximum likelihood, ...).
 
-Result in `\(\hat \beta = \hat \beta_0, \dots, \hat \beta_5\)` (+ CI, p-values, `\(R^2\)` etc).
+Result:
+
+- `\(\hat \beta = \hat \beta_0, \dots, \hat \beta_4\)`
+- CI
+- p-values
+- `\(R^2\)`
 
 ---
 
@@ -333,32 +382,47 @@ Result in `\(\hat \beta = \hat \beta_0, \dots, \hat \beta_5\)` (+ CI, p-values, 
 
 ---
 
-# If we do it
+# If we do
 
-- Use `\(\alpha \gg 0.05\)` (be conservative before you drop a variable).
-- Use AIC or BIC (simpler models) based on relevance (not necessary software defaults)
-- (Compensate with degrees of freedom from full model)
+- `\(\alpha \gg 0.05\)`
+
+--
+
+- AIC or BIC (penalized LR)
+
+--
+
 - Combine with clinical judgement!
+
+--
+
 - Forward selection better than "univariable screening"
 
 ---
 
-# Variable selection: Example
+# Let's do it!
 
-- Exclude variables with `\(\beta \approx 0\)` (for which `\(H_0: \beta_i = 0\)` not rejected).
-- Assume that `\(\beta_4 = \beta_5 \approx 0\)` (reject `\(H_0\)` with `\(p = (.4, .6)\)` let's say). 
+- Test `\(H_0: \beta_i = 0\)` for `\(i \in \{1, 2, 3, 4\}\)`
 
-`$$\mathrm{vas1} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} +\beta_3 \mathrm{vas0} + \varepsilon$$`
+--
+- Assume `\(p_3 = .4, p_4 = .6\)` (Wald-test)
 
-Then let: `vas = vas0 - vas1`:
+--
+- Can not reject `\(\beta_3 = \beta_4 = 0\)`
 
+--
 
 `$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon$$`
+
+???
+
+p-values based on Wald-test for individual parameters, but LR-test for global association of full model.  
+
 ---
 
 # Overfitting
 
-- Too little data `\((m)\)` compared to number of parameters `\((p)\)`.
+- Too many parameters, `\(p\)` for the data `\(m\)`.
 
 --
 - Extreme case: `\(X =\)` identity number ("saturated model")
@@ -372,7 +436,7 @@ Then let: `vas = vas0 - vas1`:
 
 --
 - Shrinkage
-  - Suppress `\(|\beta|\)` towards 0.
+  - Suppress `\(|\beta|\)` towards 0
   - Ridge Regression
   - Penalized maximum likelihood
 
@@ -389,12 +453,24 @@ Model uncertainty!
 
 # Residuals
 
+`$$\varepsilon \sim N(0, \sigma)$$`
+
 1. Estimate `\(\beta\)` as `\(\hat \beta\)`
+
+--
 2. Estimate `\(Y\)` as `\(\hat Y = X\hat \beta\)`
+
+--
 3. Compare estimates to observed values: `\(e = Y - X\hat \beta\)`
+
+--
 4. Box-plot of `\(e\)` vs `sex` (categorical variable).
-4. Scatter-plot `\(e\)` vs `age` (continuous variable).
-5. Is there any systematic patterns?
+
+--
+5. Scatter-plot `\(e\)` vs `age` (continuous variable).
+
+--
+6. Is there any systematic patterns?
 
 ---
 
@@ -402,35 +478,35 @@ Model uncertainty!
 
 
 
-`$$\mathrm{vas} = -10 -0,2\cdot\mathrm{age} + 3\cdot\mathrm{female} + \varepsilon$$` 
-where `\(\varepsilon \sim N(0,2)\)`
+- `\(\mathrm{vas} = -10 -0,2\cdot\mathrm{age} + 3\cdot\mathrm{female} + \varepsilon\)` with `\(\varepsilon \sim N(0,2)\)`
 
-Parameters: `\(\beta = (\beta_0, \beta_1, \beta_2) = (-10, -0.2, 3)\)`
+--
+- `\(\beta = (\beta_0, \beta_1, \beta_2) = (-10, -0.2, 3)\)` and `\(\sigma = 3\)`
 
-Parameter estimates: `\(\hat \beta = (\hat \beta_0, \hat \beta_1, \hat\beta_2) = (-8.7, -0.2, 2.4)\)`
+--
+- `\(\hat \beta = (\hat \beta_0, \hat \beta_1, \hat\beta_2) = (-8.7, -0.2, 2.4)\)`
 
 ---
 # Residuals vs sex
 
-![](index_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
 
 ---
 # Residuals vs age
 
-![](index_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
 
 ---
 # Residuals vs fitted
 
-![](index_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
 
 ---
 
-# Normality assumption
+# Normality assumption (for inference)
 
-.footnote[Not always necessary but needed for some inference such as CI ans p-values.]
 
-![](index_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -445,11 +521,11 @@ Parameter estimates: `\(\hat \beta = (\hat \beta_0, \hat \beta_1, \hat\beta_2) =
 
 # Graphical representation
 
-![](index_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
 
 ???
 
-# För- och nackdelar med grafiska representationen
+# Pros and cons graphical methods
 
 * *+** intuitive
 * *+** possible to see interactions
@@ -470,7 +546,7 @@ Parameter estimates: `\(\hat \beta = (\hat \beta_0, \hat \beta_1, \hat\beta_2) =
 
 # Non-parametric smoother
 
-![](index_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -481,7 +557,7 @@ Some additional pattern exist (noise in this case).
 
 .footnote[Restricted cubic splines with 3 knots.]
 
-![](index_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -492,36 +568,41 @@ Is the spline a better approximation to the data (compared to the straight line)
 # Interaction 
 
 Main effects: 
-`$$f(X) = \sum X_i \beta_i$$`
 
 `$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon$$`
 
 Main effects and interaction terms: 
-`$$f(X) = \sum X_i \beta_i + \sum \sum X_i X_j \beta_{ij}$$`
-
 
 `$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta_3 \mathrm{age}\cdot\mathrm{female}  +\varepsilon$$`
+
+???
 
 Multidimensional interaction `\((\beta \prod X_k)\)` and functional forms (polynomial etc) also possible but hard to interpret.
 
 ---
 
-# Interpretation of interaction effects
+# Interaction
 
-- Difficult (the effect of a change in variable `\(x\)` holding all other variables constant is not possible)
-- Marginal effects instead
-- Always include main effects for corresponding interaction effects
-- Impossible combinations might occur (pregnant men, cemented cup for hemiarthroplasty or in-patient primary care)?
+- Difficult to interpret: changing `\(\mathrm{age}\)` without `\(\mathrm{age}\cdot\mathrm{sex}\)` impossible!
+
+--
+- Marginal effects
+
+--
+- Always include main effects!
+
+--
+- Avoid impossible combinations (pregnant men)
 
 ---
 
 # Validation
 
-`\(R^2, R^2_{adj}, AUC, \dots\)` overestimated in case of overfitting. 
+Model validity `\((R^2, R^2_{adj}, AUC, \dots)\)` overestimated in case of overfitting. 
 
 --
 - External
-  - On data not available by the time of model development
+  - On data not available during model development
   - Perhaps by different researchers
   
 --
