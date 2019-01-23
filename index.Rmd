@@ -48,6 +48,10 @@ background-size: cover
 
 background-image: url("https://nouwcdn.com/11/1250000/1210000/1205466/pics/20161202224947217241205466_sbig.jpg")
 background-size: cover
+
+???
+
+dykarsjuka = decompression sickness
 ---
 
 # Purpose
@@ -309,14 +313,14 @@ Independent variables should be independent!
 - given independent variables $X = X_1, \dots, X_4 = \mathrm{age}, \mathrm{sex}, \mathrm{vas0}, \mathrm{hosp}$,
 
 --
-- such that $Y = f(\beta X)$ for function $f(\beta X) = \beta X$ in linear regression,
+- such that $Y = f(X \beta)$ for function $f(X \beta) = X \beta$ in linear regression,
 
 --
 - with coefficients $\beta = (\beta_0, \dots, \beta_4)$ estimated by $\hat \beta = \beta_0, \dots, \beta_4$
 
 --
 
-Note that  $$\beta X = (\beta_0, \dots, \beta_p)\cdot(1, X_1, \dots, X_p)^T = \sum_{i = 0}^p \beta_i X_i = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$$
+Note that  $$X \beta = (\beta_0, \dots, \beta_p)\cdot(1, X_1, \dots, X_p)^T = \sum_{i = 0}^p \beta_i X_i = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$$
 
 ---
 
@@ -442,13 +446,13 @@ Model uncertainty!
 
 # Residuals
 
-- I said that $Y = \beta X$
+- I said that $Y = X \beta$
 
 --
 - I lied! 
 
 --
-- Actually $Y = \beta X + \varepsilon$ 
+- Actually $Y = X \beta + \varepsilon$ 
 
 --
 - So what is $\varepsilon$ then?
@@ -509,7 +513,7 @@ $$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \vare
   - $\hat \beta = (\hat \beta_0, \hat \beta_1, \hat\beta_2) = (-8.7, -0.2, 2.4)$
 
 --
-- Plot $e = Y - \hat \beta X$ (in different ways)
+- Plot $e = Y - X \hat \beta$ (in different ways)
 
 ---
 # Residuals vs sex
