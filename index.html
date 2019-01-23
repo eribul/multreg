@@ -150,7 +150,7 @@ Time series analysis example of multivariate model (PROM?).
 
 --
 
-&gt; Is there any association between `age` och `vas1`?
+&gt; Is there any association between `age` and `vas1`?
 
 --
 
@@ -185,10 +185,10 @@ Time series analysis example of multivariate model (PROM?).
 - Type of hospital `hosp`
 
 --
-- Thromboprophylaxis prophylaxis used `tromb`
+- Thromboprophylaxis used `tromb`
 
 --
-- If the first letter of hospital name is a a hard vocal (`hardvok1sjname`).
+- If hospital name has more than 10 letters (`sjname10`).
 
 --
 - Elective vs acute (`dia`)
@@ -295,7 +295,7 @@ Independent variables should be independent!
 
 Note that  `$$X \beta = (\beta_0, \dots, \beta_p)\cdot(1, X_1, \dots, X_p)^T = \sum_{i = 0}^p \beta_i X_i = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$$`
 
----
+--
 
 # Model
 
@@ -335,7 +335,11 @@ $$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta
 Estimate `\(\beta = \beta_0, \dots, \beta_4\)` from
 
 $$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta_3 \mathrm{county} + \beta_4 \mathrm{university} $$
-"Black magic for now!"
+--
+
+Black magic!
+
+--
 
 Result:
 
@@ -383,6 +387,10 @@ Result:
 --
 - Clinical judgement!
 
+???
+
+Keep it, even if p is relatively large.
+
 ---
 
 # Let's do it!
@@ -408,13 +416,12 @@ $$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta
 p-values based on Wald-test for individual parameters, but LR-test for global association of full model.  
 ---
 
-background-image: url("index_files/figure-html/graf.png")
-background-size: contain
-
 # Something missing?
 
---
-Model uncertainty!
+`$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female}$$`
+
+&lt;img src="index_files/figure-html/graf.png" width="75%" /&gt;
+
 ---
 
 # Residuals
@@ -445,7 +452,7 @@ Is it?
 3. Compare estimates to observed values: `\(e = Y - \hat Y\)`
 
 --
-4. Does it look like `\(e \approx \varepsilon\sim N(0,\sigma)\)`?
+4. Does it look like `\(\varepsilon\sim N(0,\sigma)\)`?
 
 ---
 
@@ -453,7 +460,7 @@ Is it?
 
 
 
-`$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon$$`
+`$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon,  \varepsilon \sim N(0, \sigma)$$`
 
 --
 - An almighty god knows that `\(\beta = (\beta_0, \beta_1, \beta_2) = (-10, -0.2, 3)\)` and `\(\sigma = 3\)`
@@ -469,17 +476,17 @@ Is it?
 ---
 # Residuals vs sex
 
-![](index_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
 
 ---
 # Residuals vs age
 
-![](index_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
 
 ---
 # Residuals vs fitted
 
-![](index_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+![](index_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
 
 ???
 
@@ -496,56 +503,12 @@ Is it?
 
 - Subjective
 - Confirm `\(\varepsilon \sim N(0, \sigma)\)`? Good!
-- reject? 
+- If not: 
   - Missing covariates?
   - Different functional form?
+  - Interaction effects?
   - Splines?
 
----
-
-# Graphical representation
-
-![](index_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
-
-???
-
-# Pros and cons graphical methods
-
-* *+** intuitive
-* *+** possible to see interactions
-* *-** Only continues non-censored variables
-* *-** Difficult with weak patterns and a lot of data
-* *-** Limited number of dimensions
-
-- x-axis
-- line color
-- fill color
-- patterns/figure points
-- size
-- transparency 
-- line type
-- time (visualization)
-
----
-
-# Non-parametric smoother
-
-![](index_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
-
-???
-
-Some additional pattern exist (noise in this case).
----
-
-# Flexibel parametric model
-
-.footnote[Restricted cubic splines with 3 knots.]
-
-![](index_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
-
-???
-
-Is the spline a better approximation to the data (compared to the straight line)?
 ---
 
 
@@ -554,7 +517,6 @@ Is the spline a better approximation to the data (compared to the straight line)
 `$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon$$`
 
 &lt;img src="index_files/figure-html/graf.png" width="50%" /&gt;
-
 
 
 ---
@@ -588,6 +550,34 @@ Multidimensional interaction `\((\beta \prod X_k)\)` and functional forms (polyn
 
 ---
 
+# Graphical representation
+
+![](index_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+---
+
+
+# Non-parametric smoother
+
+![](index_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+???
+
+Some additional pattern exist (noise in this case).
+---
+
+# Flexibel parametric model
+
+.footnote[Restricted cubic splines with 3 knots.]
+
+![](index_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+
+???
+
+Is the spline a better approximation to the data (compared to the straight line)?
+
+---
+
 # Validation
 
 Model validity `\((R^2, R^2_{adj}, AUC, \dots)\)` overestimated in case of overfitting. 
@@ -611,12 +601,19 @@ Preferred to re-do the whole analysis (variable selection) for each re-sample.
 ---
 
 
-# Do not
+# Advice
+
+## Do
+
+- Think, study and read!
+- Use clinical judgement (in variable selection, functional form, interpretation)
+- Include main effects for all interactions
+
+## Do not
 
 - Include irrelevant variables!
 - Include too many parameters compared to sample size
-- Model interaction without main effects
-- Interpret coefficients of interaction effects directly
+- Interpret coefficients of interaction effects as main effects
 - Include variables that are co-linear (if interpreting is warranted)
 - Extrapolate
 
@@ -630,30 +627,6 @@ background-position: center
 background-image: url("https://images-na.ssl-images-amazon.com/images/I/41JCfSrnrdL._SX351_BO1,204,203,200_.jpg")
 background-size: contain
 background-position: center
----
-
-background-image: url("index_files/figure-html/map.PNG")
-background-size: cover
----
-
-background-image: url("index_files/figure-html/satelit.PNG")
-background-size: cover
----
-
-background-image: url("index_files/figure-html/flyg.PNG")
-background-size: cover
----
-
-background-image: url("https://www.littlebigbikes.com/wp-content/uploads/2014/10/littlebig-pedal-and-crank-attachment.jpg")
-background-size: cover
----
-
-background-image: url("https://scontent-sea1-1.cdninstagram.com/vp/d287acbebbe4916df370a57c7360e0ab/5CBD9D9D/t51.2885-15/sh0.08/e35/s750x750/45268374_285962072029019_4152845941940666944_n.jpg?_nc_ht=scontent-sea1-1.cdninstagram.com&amp;ig_cache_key=MTkxNjIxNzAyMjk4MzgyMDkzNw%3D%3D.2")
-background-size: cover
----
-
-background-image: url("https://scontent-arn2-1.xx.fbcdn.net/v/t31.0-8/22792482_1933090217012587_1033686099322050073_o.jpg?_nc_cat=111&amp;_nc_ht=scontent-arn2-1.xx&amp;oh=fed12504d30116056c3190e2977d93c4&amp;oe=5C8ED1F8")
-background-size: cover
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
