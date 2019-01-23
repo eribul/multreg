@@ -1,6 +1,6 @@
 ---
 title: "A deep dive in multiple regression"
-author: "Erik Bülow"
+author: "Erik Bulow"
 date: "2018-12-03" 
 output:
   xaringan::moon_reader:
@@ -52,20 +52,13 @@ background-size: cover
 
 # Purpose
 
-- Aims
-  - Introduce terminology
-  - Motivate further studies
+- Aim
+  - Overview to motivate further studies
 
 --
 - Does not include
   - Deep theoretical reasoning and mathematical proofs
   - Programming skills
-  - Real data example
-
---
-- Prerequisites
-  - some experience with regression
-  - mathematical notation
 
 --
 - Trigger warning!
@@ -86,42 +79,9 @@ This presentation is available online:
 knitr::include_graphics("https://www.azquotes.com/picture-quotes/quote-all-models-are-wrong-but-some-are-useful-george-e-p-box-53-42-27.jpg")
 ```
 
-
-$$Y = f(X) + \varepsilon$$
-
 ---
 
-# Notation
 
-Assume we want to model an outcome $Y$ ...
-
---
-based on $p$ independent variables $X = X_1, X_2, \dots, X_p$,
-
---
-such that $Y = f(X)$ for some function $f$
-
---
-estimated by $\hat f$, such that 
-
-$$Y = f(X) = \hat f (X) + \varepsilon \approx \hat f(X)$$
-
-for $\varepsilon \sim N(0, \sigma^2)$ for some $\sigma > 0$.
-
---
-This usually involves coefficients $\beta = (\beta_0, \dots, \beta_{p+1})$, such that 
-
---
-$f (X) = f (X\beta)$ 
-
---
-where $\beta X = \sum_{i = 0}^p \beta_i X_i = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$ 
-with $X_0 = 1$
-
-
-.footnote[LHS could also be for example the probability of an event (logistic regression).]
-
----
 
 # Modelling steps
 
@@ -137,52 +97,42 @@ with $X_0 = 1$
 4. Method: LM, GLM, Cox, (GGLM, GAM, ...)
 
 --
-5. Covariates adjustments?
+5. *(Estimate parameters)*
 
 --
-6. *(Estimate parameters)*
+6. Model adjustments
 
 --
-7. Model adjustments/variable selection
+7. Validation
 
 --
-8. Validation
-
---
-9. *(Present/describe result)*
+8. *(Present/describe result)*
 
 ---
 
 # Regression
 
-Estimate expected value (quantile/median, probability etc) of outcome given covariates.
+Estimate some outcome given some other characteristics.
 
-- Linear (LM): $f = \beta X$
-- Generalized linear (GLM) $f = g(\beta X)$
+- Linear (LM)
+- Generalized linear (GLM)
   - Logistic
-- Cox $(\lambda e^{\beta X})$
-
-???
-
-We use LM but much is generalizable!
-
-
-# Additional methods
-
-Additive models
-- mixed/hierarchical models
-- Non-parametric regression; splines and smoothers. e.g. moving average or moving least squares linear regression smoother (loess)
+- Cox
 
 ---
 
 # Definitions
 
-- Simple/univariable: $X = X_1$
-- Multiple/multivariable: $X = X_1, \dots, X_p$
+- Simple/univariable
 
+--
+- Multiple/multivariable
 
-- Univariate: $Y = Y_1$
-- Multivariate: $Y = Y_1, \dots, Y_{p'}$
+--
+- Univariate
+
+--
+- Multivariate
 
 ???
 
@@ -198,26 +148,20 @@ Time series analysis example of multivariate model (PROM?).
 
 > How do patients on average rate their over-all health one year after primary surgery?
 
-$$Y = \mathrm{vas1} = f(X\beta)$$
+`vas1`
 
 ---
 
-# The method
+# Method
 
 - What sort of outcome?
 
 --
-
-- Approximately continuous (0-100).
+- `vas1` is approximately continuous (0-100).
 
 --
-
 - Linear regression!
 
-$$Y = \mathrm{vas1} = f(X\beta) = X\beta$$
-???
-
-Ordinal scale from 2017
 
 ---
 
@@ -231,12 +175,10 @@ Ordinal scale from 2017
 
 --
 
-- Age is approximately continues.
+- Age is continues.
 
 --
-- Sometimes (rarely) motivated to categorize (young/old).
-
-$$\mathrm{vas1} = \beta0 + \beta_1\mathrm{age} + \varepsilon$$
+- Rarely motivated to categorize (young/old).
 
 ---
 
@@ -245,11 +187,7 @@ $$\mathrm{vas1} = \beta0 + \beta_1\mathrm{age} + \varepsilon$$
 - Additional variables to adjust for.
 
 --
-- Treated as exposure.
-
---
 - DAG?
-
 
 ```{r}
 knitr::include_graphics("https://www.researchgate.net/profile/Carlos_Del_Rio2/publication/276910016/figure/fig3/AS:271809798996000@1441815914822/Directed-acyclic-graph-DAG-illustrating-the-hypothesized-rectal-STI-HIV-association-and.png")
@@ -258,34 +196,37 @@ knitr::include_graphics("https://www.researchgate.net/profile/Carlos_Del_Rio2/pu
 
 # Covariates
 
-$$Y = \beta_0 + \beta_1 \mathrm{age} + ???$$
-
---
-
 - `sex`
 
 --
-
 - preoperative health (`vas0`)
 
 --
-
 - year of birth (`byear`)
 
 --
+- Type of hospital `hosp`
 
+--
+- Thromboprophylaxis prophylaxis used `tromb`
+
+--
 - If the first letter of hospital name is a a hard vocal (`hardvok1sjname`).
 
 --
-
 - Elective vs acute (`dia`)
+
+--
+- 1000 other variables that might be nice to have
 
 ???
 
 - **Yes**, good default (compare Swedish official statistics)
 - **Yes**, reasonable baseline adjustment 
 - **Mayby**, could otherwise confuse age for cohort
-- **No**, could be significant but does not have any reasonable relevance (overfittnig).
+- **Yes**, is interesting
+- **Yes**, is interesting
+- **No**, does not make sense.
 - **No**, use for inclusion/exclusion or stratification (also no `vas0` for fractures)
 
 ---
@@ -293,35 +234,27 @@ $$Y = \beta_0 + \beta_1 \mathrm{age} + ???$$
 
 # Collinearity
 
-How $X_i$:s relate
+Independent variables should be independent!
 
 --
-- Ideal case: independent variables orthogonal 
-
---
-- Avoid at least obvious dependencies (pairwise correlation/VIF)
+- Avoid obvious dependencies (pairwise correlation/VIF)
 
 --
 - Can not distinguish estimates
 
 --
-- Hard to make variable selections based on p-values etc
-
---
 - OK for prediction modelling
 
 --
-- Autocorrelation for time series (PROM at 0, 1, 6 and 10 years). 
-
---
-
 > `byear` and `age` redundant for shorter time frames. Drop `byear`!
+
 
 ---
 
 # Missing data
 
 - Exclude cases with missing $Y$
+- Exclude $X_i$ with too much missing data
 
 --
 - Exclude cases with any $X_i$ missing (common but not recommended)
@@ -330,19 +263,16 @@ How $X_i$:s relate
 
 --
 - Different sorts of (partially) missing data:
-
---
   - Missing completely at random (MCAR)
-
---
   - Missing at random (MAR)
-
---
   - Missing not at random (MNAR)
 
 --
 - Multiple imputation using chained equation (Mice, MCMC, Monte Carlo, bootstrap)
 
+--
+> Exclude `trombos` (too little data). 
+ 
 ???
 
 - MCAR - as it sounds
@@ -351,33 +281,91 @@ How $X_i$:s relate
 
 ---
 
-# Transformations/different functional forms
+# Enough data?
 
-- `sex` as indicator variable, `sex = 1` for male.
+- Too many parameters, $p$ for the data $m \Rightarrow$ overfitting
 
 --
+- Extreme case: $X =$ identity number ("saturated model")
 
-- Some fun with `vas0` (`vas1`): $\log(x), 1 / x, \sqrt x, x + 2x^2 - \pi x^3, \dots$?
-- `vas = vas1 - vas0`  
 --
+- Recommendation: $p < m/ 15$ where $m$ depends on the variable:
+  - continues: $n$
+  - binary: $\min(n_1, n_2)$
+  - ordinal: $n - \frac{1}{n^2} \sum^k_{i = 1}n^3_i$
+  - survival: no of events
 
-- `byear` (if included) categorized: baby-boomers, generation X, MTV-generation, millenials (Ordinal?)
+--
+> Drop the 1000 variables that were nice to have!
 
 ---
 
+
+# Notation
+
+- We model the outcome $Y = \mathrm{vas1}$,
+
+--
+- given independent variables $X = X_1, \dots, X_4 = \mathrm{age}, \mathrm{sex}, \mathrm{vas0}, \mathrm{hosp}$,
+
+--
+- such that $Y = f(\beta X)$ for function $f(\beta X) = \beta X$ in linear regression,
+
+--
+- with coefficients $\beta = (\beta_0, \dots, \beta_4)$ estimated by $\hat \beta = \beta_0, \dots, \beta_4$
+
+--
+
+Note that  $$\beta X = (\beta_0, \dots, \beta_p)\cdot(1, X_1, \dots, X_p)^T = \sum_{i = 0}^p \beta_i X_i = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$$
+
+---
+
+# Model
+
+$$\mathrm{vas1} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{sex} + \beta_3 \mathrm{vas0} + \beta_4 \mathrm{hosp} $$
+
+---
+
+# Transformations
+
+- `sex` as dummy variable, `sex = 1` for female.
+
+--
+- `hosp` as several dummy variables: `rural`, `county`, `university`
+
+--
+- `vas = vas1 - vas0`  
+
+--
+- Some fun with `age`: $\log(x), 1 / x, \sqrt x, x + 2x^2 - \pi x^3, \dots$, splines?
+
+--
+- `byear` (if included) categorized (ordinal?): 
+  - baby-boomers
+  - generation X
+  - MTV-generation
+  - millenials
+
+--
+
+$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta_3 \mathrm{county} + \beta_4 \mathrm{university} $$
+
+---
+
+
 # Parameter estimates
 
-Estimate $\beta = \beta_1, \dots, \beta_5$ from
+Estimate $\beta = \beta_0, \dots, \beta_4$ from
 
-$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta_3 \mathrm{byear} + \beta_4 \mathrm{hardvok1sjname} + \varepsilon$$
-"Black magic"! (linear least squares, non-linear least squares, maximum likelihood, ...).
+$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta_3 \mathrm{county} + \beta_4 \mathrm{university} $$
+"Black magic for now!"
 
 Result:
 
 - $\hat \beta = \hat \beta_0, \dots, \hat \beta_4$
 - CI
 - p-values
-- $R^2$
+- $R^2/R^2_{adj}$
 
 ---
 
@@ -391,9 +379,8 @@ Result:
 ## Don't!
 
 - Overfitting
-- Reduce degrees of freedom (spend $\alpha$)
 - Under-estimate CI width/p-values
-- Over-estimate $R^2$
+- Over-estimate $R^2/R^2_{adj}$
 - Ignore clinical relevance
 ]
 
@@ -414,20 +401,18 @@ Result:
 - $\alpha \gg 0.05$
 
 --
-
-- AIC or BIC (penalized LR)
-
---
-
-- Combine with clinical judgement!
+- AIC or BIC (penalized Likelihood-Ratio)
 
 --
-
-- Forward selection better than "univariable screening"
+- Clinical judgement!
 
 ---
 
 # Let's do it!
+
+
+$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta_3 \mathrm{county} + \beta_4 \mathrm{university} $$
+
 
 - Test $H_0: \beta_i = 0$ for $i \in \{1, 2, 3, 4\}$
 
@@ -439,34 +424,11 @@ Result:
 
 --
 
-$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon$$
+$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female}$$
 
 ???
 
 p-values based on Wald-test for individual parameters, but LR-test for global association of full model.  
-
----
-
-# Overfitting
-
-- Too many parameters, $p$ for the data $m$.
-
---
-- Extreme case: $X =$ identity number ("saturated model")
-
---
-- Recommendation: $p < m/ 15$ where $m$ depends on the variable:
-  - continues: $n$
-  - binary: $\min(n_1, n_2)$
-  - ordinal: $n - \frac{1}{n^2} \sum^k_{i = 1}n^3_i$
-  - survival: no of events
-
---
-- Shrinkage
-  - Suppress $|\beta|$ towards 0
-  - Ridge Regression
-  - Penalized maximum likelihood
-
 ---
 
 background-image: url("index_files/figure-html/graf.png")
@@ -480,24 +442,33 @@ Model uncertainty!
 
 # Residuals
 
-$$\varepsilon \sim N(0, \sigma)$$
-
-1. Estimate $\beta$ as $\hat \beta$
+- I said that $Y = \beta X$
 
 --
-2. Estimate $Y$ as $\hat Y = X\hat \beta$
+- I lied! 
 
 --
-3. Compare estimates to observed values: $e = Y - X\hat \beta$
+- Actually $Y = \beta X + \varepsilon$ 
 
 --
-4. Box-plot of $e$ vs `sex` (categorical variable).
+- So what is $\varepsilon$ then?
 
 --
-5. Scatter-plot $e$ vs `age` (continuous variable).
+- Perhaps $\varepsilon \sim N(0, \sigma)$ for some unknown $\sigma > 0$?
+
+Is it?
 
 --
-6. Is there any systematic patterns?
+1. Estimate $\hat \beta$
+
+--
+2. Estimate $\hat Y = X\hat \beta$
+
+--
+3. Compare estimates to observed values: $e = Y - \hat Y$
+
+--
+4. Does it look like $e \approx \varepsilon\sim N(0,\sigma)$?
 
 ---
 
@@ -527,13 +498,18 @@ co <- round(coef(fit_mod), 1)
 
 ```
 
-- $\mathrm{vas} = -10 -0,2\cdot\mathrm{age} + 3\cdot\mathrm{female} + \varepsilon$ with $\varepsilon \sim N(0,2)$
+$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon$$
 
 --
-- $\beta = (\beta_0, \beta_1, \beta_2) = (-10, -0.2, 3)$ and $\sigma = 3$
+- An almighty god knows that $\beta = (\beta_0, \beta_1, \beta_2) = (-10, -0.2, 3)$ and $\sigma = 3$
+  - Hence $\mathrm{vas} = -10 -0,2\cdot\mathrm{age} + 3\cdot\mathrm{female} + \varepsilon$ with $\varepsilon \sim N(0,3)$
 
 --
-- $\hat \beta = (\hat \beta_0, \hat \beta_1, \hat\beta_2) = (-8.7, -0.2, 2.4)$
+- "Black magic" for humble humans estimates:
+  - $\hat \beta = (\hat \beta_0, \hat \beta_1, \hat\beta_2) = (-8.7, -0.2, 2.4)$
+
+--
+- Plot $e = Y - \hat \beta X$ (in different ways)
 
 ---
 # Residuals vs sex
@@ -558,15 +534,6 @@ abline(h = 0, lty = "dotted")
 plot(fit_mod, 1)
 ```
 
----
-
-# Normality assumption (for inference)
-
-
-```{r}
-plot(fit_mod, 2)
-```
-
 ???
 
 # Pros and cons with residuals
@@ -575,6 +542,17 @@ plot(fit_mod, 2)
 * *-** Just for continues and non-censored variables
 * *-** Subjective
 * *-** Difficult if interaction exist
+
+---
+
+# Interpretation
+
+- Subjective
+- Confirm $\varepsilon \sim N(0, \sigma)$? Good!
+- reject? 
+  - Missing covariates?
+  - Different functional form?
+  - Splines?
 
 ---
 
@@ -647,15 +625,27 @@ Is the spline a better approximation to the data (compared to the straight line)
 ---
 
 
-# Interaction 
-
-Main effects: 
+# Main effects model 
 
 $$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon$$
 
-Main effects and interaction terms: 
+```{r, out.width = "50%"}
+knitr::include_graphics("index_files/figure-html/graf.png")
+```
+
+
+
+---
+
+# Interaction terms 
+
 
 $$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta_3 \mathrm{age}\cdot\mathrm{female}  +\varepsilon$$
+
+```{r}
+knitr::include_graphics("https://data.library.virginia.edu/files/int11.jpeg")
+```
+
 
 ???
 
@@ -686,9 +676,8 @@ Model validity $(R^2, R^2_{adj}, AUC, \dots)$ overestimated in case of overfitti
 - External
   - On data not available during model development
   - Perhaps by different researchers
-  
---
 
+--
 - Internal
   - Split-sample
   - Cross validation
@@ -702,16 +691,14 @@ Preferred to re-do the whole analysis (variable selection) for each re-sample.
 ---
 
 
+# Do not
 
-# Avoid
-
-- Inclusion of non-clinically relevant variables
-- Too many parameters compared to sample size
-- Interaction effects without main effects
-- Interpretation of coefficients in interaction models as if no interaction exist
-- Overfitting
-- Co-linearity between independent variables (if interpreting is warranted)
-- Extrapolation
+- Include irrelevant variables!
+- Include too many parameters compared to sample size
+- Model interaction without main effects
+- Interpret coefficients of interaction effects directly
+- Include variables that are co-linear (if interpreting is warranted)
+- Extrapolate
 
 ---
 
