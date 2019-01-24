@@ -41,19 +41,6 @@ dykarsjuka = decompression sickness
   - Deep theoretical reasoning and mathematical proofs
   - Programming skills
 
---
-- Trigger warning!
-  - Mathematical formulas does occur!
-  - Do not memorize them!
-
----
-
-# Slides available
-
-This presentation is available online:
-
-**https://multreg.netlify.com**
-
 
 ---
 ![](https://www.azquotes.com/picture-quotes/quote-all-models-are-wrong-but-some-are-useful-george-e-p-box-53-42-27.jpg)&lt;!-- --&gt;
@@ -73,7 +60,7 @@ This presentation is available online:
 3. Inclusion/exclusion/missing data
 
 --
-4. Method: LM, GLM, Cox, (GGLM, GAM, ...)
+4. Method (how the dependent variable relates to independent)
 
 --
 5. *(Estimate parameters)*
@@ -102,16 +89,9 @@ Estimate some outcome given some other characteristics.
 
 # Definitions
 
-- Simple/univariable
-
+Simple/univariable `\(\neq\)` univariate
 --
-- Multiple/multivariable
-
---
-- Univariate
-
---
-- Multivariate
+Multiple/multivariable  `\(\neq\)` Multivariate
 
 ???
 
@@ -134,11 +114,7 @@ Time series analysis example of multivariate model (PROM?).
 # Method
 
 - What sort of outcome?
-
---
 - `vas1` is approximately continuous (0-100).
-
---
 - Linear regression!
 
 
@@ -155,8 +131,6 @@ Time series analysis example of multivariate model (PROM?).
 --
 
 - Age is continues.
-
---
 - Rarely motivated to categorize (young/old).
 
 ---
@@ -164,8 +138,6 @@ Time series analysis example of multivariate model (PROM?).
 # Adjustments
 
 - Additional variables to adjust for.
-
---
 - DAG?
 
 ![](https://www.researchgate.net/profile/Carlos_Del_Rio2/publication/276910016/figure/fig3/AS:271809798996000@1441815914822/Directed-acyclic-graph-DAG-illustrating-the-hypothesized-rectal-STI-HIV-association-and.png)&lt;!-- --&gt;
@@ -214,7 +186,7 @@ Time series analysis example of multivariate model (PROM?).
 Independent variables should be independent!
 
 --
-- Avoid obvious dependencies (pairwise correlation/VIF)
+- Avoid obvious dependencies
 
 --
 - Can not distinguish estimates
@@ -267,7 +239,7 @@ Independent variables should be independent!
 
 --
 - Recommendation: `\(p &lt; m/ 15\)` where `\(m\)` depends on the variable:
-  - continues: `\(n\)`
+  - continues: `\(n\)` (sample size)
   - binary: `\(\min(n_1, n_2)\)`
   - ordinal: `\(n - \frac{1}{n^2} \sum^k_{i = 1}n^3_i\)`
   - survival: no of events
@@ -276,26 +248,6 @@ Independent variables should be independent!
 &gt; Drop the 1000 variables that were nice to have!
 
 ---
-
-
-# Notation
-
-- We model the outcome `\(Y = \mathrm{vas1}\)`,
-
---
-- given independent variables `\(X = X_1, \dots, X_4 = \mathrm{age}, \mathrm{sex}, \mathrm{vas0}, \mathrm{hosp}\)`,
-
---
-- such that `\(Y = f(X \beta)\)` for function `\(f(X \beta) = X \beta\)` in linear regression,
-
---
-- with coefficients `\(\beta = (\beta_0, \dots, \beta_4)\)` estimated by `\(\hat \beta = \beta_0, \dots, \beta_4\)`
-
---
-
-Note that  `$$X \beta = (\beta_0, \dots, \beta_p)\cdot(1, X_1, \dots, X_p)^T = \sum_{i = 0}^p \beta_i X_i = \beta_0 + \beta_1 X_1 + \dots + \beta_p X_p$$`
-
---
 
 # Model
 
@@ -306,8 +258,6 @@ $$\mathrm{vas1} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{sex} + \beta_3
 # Transformations
 
 - `sex` as dummy variable, `sex = 1` for female.
-
---
 - `hosp` as several dummy variables: `rural`, `county`, `university`
 
 --
@@ -403,8 +353,6 @@ $$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \beta
 
 --
 - Assume `\(p_3 = .4, p_4 = .6\)` (Wald-test)
-
---
 - Can not reject `\(\beta_3 = \beta_4 = 0\)`
 
 --
@@ -427,32 +375,17 @@ p-values based on Wald-test for individual parameters, but LR-test for global as
 # Residuals
 
 - I said that `\(Y = X \beta\)`
-
---
-- I lied! 
-
---
 - Actually `\(Y = X \beta + \varepsilon\)` 
 
 --
-- So what is `\(\varepsilon\)` then?
+- So what is `\(\varepsilon\)`?
 
 --
 - Perhaps `\(\varepsilon \sim N(0, \sigma)\)` for some unknown `\(\sigma &gt; 0\)`?
 
-Is it?
-
 --
-1. Estimate `\(\hat \beta\)`
+- Have a Look at `\(e = Y - \hat X\beta\)`
 
---
-2. Estimate `\(\hat Y = X\hat \beta\)`
-
---
-3. Compare estimates to observed values: `\(e = Y - \hat Y\)`
-
---
-4. Does it look like `\(\varepsilon\sim N(0,\sigma)\)`?
 
 ---
 
@@ -463,15 +396,15 @@ Is it?
 `$$\mathrm{vas} = \beta_0 + \beta_1 \mathrm{age} + \beta_2\mathrm{female} + \varepsilon,  \varepsilon \sim N(0, \sigma)$$`
 
 --
-- An almighty god knows that `\(\beta = (\beta_0, \beta_1, \beta_2) = (-10, -0.2, 3)\)` and `\(\sigma = 3\)`
+- Reality `\(\beta = (\beta_0, \beta_1, \beta_2) = (-10, -0.2, 3)\)` and `\(\sigma = 3\)`
   - Hence `\(\mathrm{vas} = -10 -0,2\cdot\mathrm{age} + 3\cdot\mathrm{female} + \varepsilon\)` with `\(\varepsilon \sim N(0,3)\)`
 
 --
-- "Black magic" for humble humans estimates:
+- Estimated model:
   - `\(\hat \beta = (\hat \beta_0, \hat \beta_1, \hat\beta_2) = (-8.7, -0.2, 2.4)\)`
 
 --
-- Plot `\(e = Y - X \hat \beta\)` (in different ways)
+- Plot `\(e = Y - X \hat \beta\)`
 
 ---
 # Residuals vs sex
@@ -601,32 +534,11 @@ Preferred to re-do the whole analysis (variable selection) for each re-sample.
 ---
 
 
-# Advice
+# Slides available
 
-## Do
+This presentation is available online:
 
-- Think, study and read!
-- Use clinical judgement (in variable selection, functional form, interpretation)
-- Include main effects for all interactions
-
-## Do not
-
-- Include irrelevant variables!
-- Include too many parameters compared to sample size
-- Interpret coefficients of interaction effects as main effects
-- Include variables that are co-linear (if interpreting is warranted)
-- Extrapolate
-
----
-
-background-image: url("https://d1w7fb2mkkr3kw.cloudfront.net/assets/images/book/lrg/9781/4614/9781461413523.jpg")
-background-size: contain
-background-position: center
----
-
-background-image: url("https://images-na.ssl-images-amazon.com/images/I/41JCfSrnrdL._SX351_BO1,204,203,200_.jpg")
-background-size: contain
-background-position: center
+**https://multreg.netlify.com**
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
